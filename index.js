@@ -33,17 +33,21 @@ const downloadImage = async (url, filepath) => {
 };
 
 const loadConfig = async () => {
-  if (existsSync("config.json")) return JSON.parse(readFileSync("config.json"));
-
-  writeFileSync(
-    "config.json",
-    JSON.stringify({
-      firstExecution: false,
-    })
-  );
-  return {
+  let cfg = {
     firstExecution: true,
   };
+  if (existsSync("config.json")) {
+    cfg = JSON.parse(readFileSync("config.json"));
+  }
+  if (cfg.firstExecution) {
+    writeFileSync(
+      "config.json",
+      JSON.stringify({
+        firstExecution: false,
+      })
+    );
+  }
+  return cfg;
 };
 
 const run = async () => {
@@ -55,8 +59,9 @@ const run = async () => {
     path: "images",
   });
 
-  const wallpaper =
-    repoContent.data[Math.floor(Math.random() * repoContent.data.length)];
+  const wallpaper = repoContent.data.filter((v) => v.type === "file")[
+    Math.floor(Math.random() * repoContent.data.length)
+  ];
 
   const downloadPath = join(process.env.DOWNLOAD_PATH, wallpaper.name);
   await downloadImage(wallpaper.download_url, downloadPath);
