@@ -4,9 +4,10 @@
 
 import { Octokit } from "octokit";
 import { config } from "dotenv";
-import { createWriteStream } from "fs";
+import { createWriteStream, unlinkSync } from "fs";
 import { join } from "path";
 import axios from "axios";
+import { getWallpaper, setWallpaper } from "wallpaper";
 config();
 
 const octokit = new Octokit();
@@ -31,12 +32,16 @@ const run = async () => {
     repo: process.env.WALLPAPER_REPO,
     path: "images",
   });
+
   const wallpaper =
     repoContent.data[Math.floor(Math.random() * repoContent.data.length)];
-  downloadImage(
-    wallpaper.download_url,
-    join(process.env.DOWNLOAD_PATH, wallpaper.name)
-  );
+
+  const downloadPath = join(process.env.DOWNLOAD_PATH, wallpaper.name);
+  await downloadImage(wallpaper.download_url, downloadPath);
+
+  const oldWallpaper = await getWallpaper();
+  unlinkSync(oldWallpaper);
+  await setWallpaper(downloadPath);
 };
 
 run();
