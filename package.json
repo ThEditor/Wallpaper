@@ -1,5 +1,6 @@
 {
   "name": "wallpaper",
+  "type": "module",
   "version": "1.0.0",
   "description": "Sets randomized wallpaper on launch",
   "main": "index.js",
@@ -8,5 +9,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "octokit": "^2.0.14",
+    "wallpaper": "^6.1.1"
+  }
 }
